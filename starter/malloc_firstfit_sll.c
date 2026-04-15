@@ -317,16 +317,20 @@ static void *heap_end(void) {
  * patterns, stress-testing the allocator under varied conditions.
  */
 static void run_workload(int seed) {
-    void *m[10] = {0};
-    void *c[10] = {0};
+    void *m[1000] = {0};
+    void *c[1000] = {0};
+    
     /* Phase 1: allocate 10 differently-sized blocks */
     for (int i = 0; i < 10; ++i) m[i] = ff_malloc((size_t)(24 + seed + i * 8));
-    /* Phase 2: allocate 10 zeroed blocks via calloc */
-    for (int i = 0; i < 10; ++i) c[i] = ff_calloc((size_t)(3 + i), sizeof(int));
-    /* Phase 3: grow each malloc'd block (exercises realloc copy path) */
-    for (int i = 0; i < 10; ++i) m[i] = ff_realloc(m[i], (size_t)(96 + seed + i * 8));
+    
+    /* Phase 2: allocate 100 zeroed blocks via calloc */
+    for (int i = 0; i < 100; ++i) c[i] = ff_calloc((size_t)(3 + i), sizeof(int));
+    
+    /* Phase 3: grow each malloc'd block (exercises realloc copy path and acts as malloc for NULLs) */
+    for (int i = 0; i < 1000; ++i) m[i] = ff_realloc(m[i], (size_t)(96 + seed + i * 8));
+    
     /* Phase 4: free everything — leaked_bytes() should return 0 afterward */
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 1000; ++i) {
         ff_free(m[i]);
         ff_free(c[i]);
     }

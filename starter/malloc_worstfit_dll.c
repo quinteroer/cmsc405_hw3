@@ -276,12 +276,17 @@ static void *heap_end(void) {
  * heap states across threads (which would make concurrency bugs harder to spot).
  */
 static void run_workload(int seed) {
-    void *m[10] = {0};
-    void *c[10] = {0};
+    void *m[1000] = {0};
+    void *c[1000] = {0};
+    
     for (int i = 0; i < 10; ++i) m[i] = wf_malloc((size_t)(30 + seed + i * 7));
+    
     for (int i = 0; i < 100; ++i) c[i] = wf_calloc((size_t)(2 + i), sizeof(int));
+    
+    /* Reallocates the first 10, and acts as malloc() for the remaining 990 NULLs */
     for (int i = 0; i < 1000; ++i) m[i] = wf_realloc(m[i], (size_t)(70 + seed + i * 12));
-    for (int i = 0; i < 10; ++i) {
+    
+    for (int i = 0; i < 1000; ++i) {
         wf_free(m[i]);
         wf_free(c[i]);
     }

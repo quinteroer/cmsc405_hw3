@@ -274,12 +274,16 @@ static void *heap_end(void) {
 /* ── Workload & threading harness ───────────────────────────────────────── */
 
 static void run_workload(int seed) {
-    void *m[10] = {0};
-    void *c[10] = {0};
+    void *m[1000] = {0};
+    void *c[1000] = {0};
+    
     for (int i = 0; i < 10; ++i) m[i] = bf_malloc((size_t)(20 + seed + i * 6));
-    for (int i = 0; i < 10; ++i) c[i] = bf_calloc((size_t)(i + 1), sizeof(int));
-    for (int i = 0; i < 10; ++i) m[i] = bf_realloc(m[i], (size_t)(72 + seed + i * 10));
-    for (int i = 0; i < 10; ++i) {
+    
+    for (int i = 0; i < 100; ++i) c[i] = bf_calloc((size_t)(i + 1), sizeof(int));
+    
+    for (int i = 0; i < 1000; ++i) m[i] = bf_realloc(m[i], (size_t)(72 + seed + i * 10));
+    
+    for (int i = 0; i < 1000; ++i) {
         bf_free(m[i]);
         bf_free(c[i]);
     }
