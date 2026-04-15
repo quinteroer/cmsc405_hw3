@@ -14,7 +14,7 @@ compile_and_run() {
   echo "[$label] compiling: $src"
   gcc -std=c11 -Wall -Wextra -pedantic -pthread "$src" -o "$bin"
 
-  echo "[$label] running: $bin"
+  echo "[$label] running: $bin"s
   "$bin"
   echo
 }
